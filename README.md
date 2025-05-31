@@ -41,8 +41,14 @@
  http://localhost:64653
 
  で起動hします。
+## ローカルLLMを使用しない場合
+base_urlを使用するサービスのAPIアドレスに変更、api_keyに各自取得しているキーそ記載
+a_client =AsyncOpenAI(
+    base_url="http://39.110.248.77:64650/v1", # 27B　PC1
+    api_key="YOUR_OPENAI_API_KEY",  # このままでOK
+    )
 
- ## 画像を生成しない場合
+## 画像を生成しない場合
 
  music_server.pyの
 
