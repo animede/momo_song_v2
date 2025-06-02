@@ -54,7 +54,7 @@ python　music_server.py
 
  http://localhost:64653
 
- で起動hします。
+ で起動します。
 ## ローカルLLMを使用しない場合
 base_urlを使用するサービスのAPIアドレスに変更、api_keyに各自取得しているキーそ記載
 
