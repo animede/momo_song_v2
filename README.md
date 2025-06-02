@@ -46,7 +46,9 @@
 
 　pillow
 
-　python　music_server.py
+起動コマンド
+
+python　music_server.py
 
  ブラウザから
 
