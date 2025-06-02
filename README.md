@@ -32,9 +32,21 @@
  Responceは
  mp3オーディオとpngイメージです。
 
+ 再度、ターミナルを開いて、ACE-Stepで作成した環境を有効にします。
+
  momo_song_v2へ移り、music_server本体を動かします。
 
- python　music_server.py
+事前に以下モジュールをインストール。もし起動時にモジュールがないとメッセージが出たら追加Hしてください。
+
+　asyncio
+
+　pygame
+
+　openai
+
+　pillow
+
+　python　music_server.py
 
  ブラウザから
 
