@@ -102,9 +102,9 @@
                   <div class="slider-item">
                     <label for="infer_step">infer_step</label>
                     <input type="range" id="infer_step" name="infer_step"
-                      min="20" max="200" step="1" value="50"
+                      min="20" max="200" step="1" value="100"
                       oninput="document.getElementById('infer_step_value').textContent = this.value" />
-                    <span id="infer_step_value">50</span>
+                    <span id="infer_step_value">100</span>
                   </div>
                   <div class="slider-item">
                     <label for="guidance_scale">guidance_scale</label>
@@ -153,7 +153,7 @@
       // 2. 自動生成用のタイマー・状態管理
       let autoGenerateEnabled = false;
       let lastUserAction = 0;
-      const AUTO_GENERATE_IDLE = 120000;     // 120秒間操作がなければ発動
+      const AUTO_GENERATE_IDLE = 60000;     // 120秒間操作がなければ発動
 
       const autoGenerateChk = document.getElementById('auto_generate_chk');
 
@@ -258,6 +258,7 @@
         let error=false
         const formData0 = new FormData();
         formData0.append('user_input', fullPrompt);
+        formData0.append('previouse_title', title);
         try {
           const response = await fetch('/generate_lyrics', { method: 'POST', body: formData0 });
         if (!response.ok) {
@@ -286,6 +287,7 @@
         console.log("xxx m_title=", m_title);
         document.getElementById('result_title_a').textContent = m_title;
         const lyrics_section= lyrics_dict_js.lyrics;
+        console.log("lyrics_section=", lyrics_section);
         const lyrics_Text = Object.values(lyrics_section).join('\n');
         const lyricsL_txt_lines = lyrics_Text.split('\n').map(line => line.trim()).filter(line => line);
         console.log("lyricsL_txt_lines=", lyricsL_txt_lines);
