@@ -36,9 +36,9 @@ async def music_generation(user_input,genre_tags):
         ユーザーの入力の意図を正確に判断して選択肢から選び、指定されたワードを返しなさい。選択肢->
         1) autoや、おまかせの場合の指定ワードは'generatSong',
         2) 歌詞を指定している場合の指定ワードは'lyrics',
-        3) 曲のジャンルやテーマを指定している場合の指定ワードは'genre',
-        4) 歌詞の雰囲気を回答していると判断できる場合の指定ワードは'theme',
-        5) 曲のタイトルを回答していると判断できる場合の指定ワードは'title',
+        3) 曲のジャンルやテーマを入力している場合の指定ワードは'genre',
+        4) 歌詞の雰囲気を入力していると判断できる場合の指定ワードは'theme',
+        5) 曲のタイトルを入力していると判断できる場合の指定ワードは'title',
         検出された指定ワードは、json内に記載すること。
         user_inputにタイトル、ジャンル、ムード、楽器について記載がある場合は、各々をjesonのtitle、genre、atmosphereにinstruments記載すること。
         json形式は以下の通りとする。必ずすべてのキーを記載すること。必ずjson形式で出力すること。
@@ -72,9 +72,12 @@ async def music_generation(user_input,genre_tags):
 
     # sel_wordから処理を分岐
     if sel_word == "generatSong":
-        song_generate = "音楽の生成をする場合のタイトルやリズム、テーマ、主人公など、自由に考えて一つだけ短い文章で提案してください。\
+        song_generate = "音楽の生成をする場合のタイトルを一つだけ提案してください。\
             タイトルは様々な場面や時間、景色、思い、人、モノ、世界など、音楽のタイトルに相応しいことを想定して多彩で変化に富む内容を考えること。\
-            LLMの持つ特性に偏りがちなので自らの特性にこだわらないタイトルを考えること。タイトルは必ず記入すること。内容だけで説明は不要です。"
+            例えは、故郷、夕暮れ、星、思い出、愛、旅、夢、静か、夜、都会、山、海、アニメ、ロボット、AI、未来、過去、世界、日本、大阪、東京、その他の都市、など、\
+            これ以外も考慮しつつ多彩なテーマからタイトルを選ぶ。音楽のジャンルや雰囲気をから考えるのも効果的です。\
+            LLMの持つ特性に偏りがちなので自らの特性にこだわらないタイトルを考えること。タイトルは必ず記入すること。内容だけで説明は不要です。\
+            タイトルは日本で作成して下さい"
         response = await llm(song_generate)
         print("おまかせesponse=", response)
         return await music_generation(response,genre_tags)  # 再帰的に呼び出し
@@ -83,6 +86,7 @@ async def music_generation(user_input,genre_tags):
     else:
         print("genSong_qaで正しい選択肢が得られなかった")
         return False, None, None, None
+
 
 #　歌詞、ジャンル、テーマ,雰囲気　から作詞と作曲をする
 async def gen_lyrics(title,lyrics, genre, theme, atmosphere,instruments,genre_tags):
