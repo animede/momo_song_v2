@@ -25,12 +25,14 @@ ace_url = "http://39.110.248.77:64756/generate"#
 # Pygameの初期化
 pygame.mixer.init()
 
+
+
 async def llm(user_msg):
     print("LLM")
     response_json = await chat_req(a_client, user_msg, "あなたは賢いAIです。userの要求や質問に正しく答えること")
     return {"message": response_json}
 
-async def music_generation(user_input,genre_tags):
+async def music_generation(user_input,genre_tags,previouse_title):
     print("=====>>>>>user_input=",user_input)
     request_song = dedent(f"""
         ユーザーの入力の意図を正確に判断して選択肢から選び、指定されたワードを返しなさい。選択肢->
@@ -77,10 +79,11 @@ async def music_generation(user_input,genre_tags):
             例えは、故郷、夕暮れ、星、思い出、愛、旅、夢、静か、夜、都会、山、海、アニメ、ロボット、AI、未来、過去、世界、日本、大阪、東京、その他の都市、など、\
             これ以外も考慮しつつ多彩なテーマからタイトルを選ぶ。音楽のジャンルや雰囲気をから考えるのも効果的です。\
             LLMの持つ特性に偏りがちなので自らの特性にこだわらないタイトルを考えること。タイトルは必ず記入すること。内容だけで説明は不要です。\
-            タイトルは日本で作成して下さい"
+            タイトルは日本で作成して下さい。難しい漢字は使わないこと。前回とは異なる雰囲気やテーマのタイトルを考えてください。前回作成したタイトルは以下の通りです。前回作のタイトル="
+        song_generate =song_generate+ previouse_title
         response = await llm(song_generate)
         print("おまかせesponse=", response)
-        return await music_generation(response,genre_tags)  # 再帰的に呼び出し
+        return await music_generation(response,genre_tags,previouse_title)  # 再帰的に呼び出し
     elif sel_word in ["lyrics", "genre", "theme", "atmosphere",'title']:
         return await gen_lyrics(json_data['title'],json_data['lyrics'], json_data['genre'], json_data['theme'], json_data['atmosphere'],json_data['instruments'],genre_tags)
     else:
@@ -110,7 +113,7 @@ async def gen_lyrics(title,lyrics, genre, theme, atmosphere,instruments,genre_ta
         ユーザーのクエストに長さ指定のような記載があれば従ってください、無ければ15行前後の歌詞を作成すること。30行よりも長い歌詞は作成しないこと。
         lyricsの形式の見本は以下のとおりです。ただし、詞や曲の内容に応じて、"verse"、"chorus", "bridge", "outro"を作曲の理論を参照しつつ、組み合わせること。
         "verse"、"chorus", "bridge"は複数回使っても構いません。形式は必ず"verse"、"chorus", "bridge", "outro"を1回以上使う恋と。
-        "verse1","verse2"のように複数回使うことも可能です。曲の雰囲気に合わせて、慎重に考えてください。
+        "verse1","verse2"のように複数回使うことも可能です。曲の雰囲気に合わせて、慎重に考えてください。歌詞の形式は必ず以下の見本のように[[ }}形式にすること。
         歌詞の形式の基本的な見本={{"verse": "歌詞の内容", "chorus": "歌詞の内容", "bridge": "歌詞の内容", "outro": "歌詞の内容"}}
         genreの作成は以下のタグが定義されたjsonを参考にしてください。
         'genre'、'instrument'、'mood'、'gender'、'timbre'の各キーから必要に応じて一つ以上のタグを採用してください。
@@ -122,7 +125,7 @@ async def gen_lyrics(title,lyrics, genre, theme, atmosphere,instruments,genre_ta
     """).strip()
 
     #print("request_msg=", request_msg)
-    print("Setuo prompt for generate lyrics & genere")
+    print("Setup prompt for generate lyrics & genere")
     response = await llm(request_msg)
 
     # 正規表現でJSON部分を抽出

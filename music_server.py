@@ -29,13 +29,14 @@ async def read_index():
     return FileResponse('templates/index.html')
 
 @app.post('/generate_lyrics')
-async def generate(request: Request, user_input: str = Form(...)):
+async def generate(request: Request, user_input: str = Form(...),previouse_title:str=Form(...)):
     if user_input is None or user_input.strip() == "":
         user_input = "おまかせで音楽を生成してください"
-    success, lyrics_dict, music_world, _ = await music_generation(user_input,genre_tags)
+    success, lyrics_dict, music_world, _ = await music_generation(user_input,genre_tags,previouse_title)
     if not success:
         return JSONResponse({ 'err': '音楽生成に失敗しました' }, status_code=500)
     print("music_world=",music_world)
+    print("lyrics_dict=",lyrics_dict)
     result=True
     return JSONResponse({"result":result,"lyrics_dict": lyrics_dict, "music_world":music_world})
 
